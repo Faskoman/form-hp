@@ -1,44 +1,22 @@
-import { ChangeEvent, FormEvent, PropsWithChildren, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import "./App.scss";
+import FormField from "./FormField";
+import Input from "./Input";
 
 function App() {
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
-
-  const validateFields = () => {
-    const formData = new FormData(document.querySelector('form')!);
-    const firstName = formData.get("firstName");
-    const lastName = formData.get("lastName");
-
-    setFirstNameError(firstName ? "" : "Please enter your first name.");
-    setLastNameError(lastName ? "" : "Please enter your last name.");
-
-    return !!firstName && !!lastName;
-  };
+  const { errors, handleInput, validateFields } = useFormValidation();
 
   const nextPage = (e: FormEvent<HTMLFormElement>) => {
-    console.log("on submit");
     e.preventDefault();
-
-    if (!validateFields()) {
+    const formData = new FormData(e.currentTarget);
+    if (!validateFields(formData)) {
       return;
     }
-
-    const formData = new FormData(e.currentTarget);
-    const firstName = formData.get("firstName");
-    const lastName = formData.get("lastName");
-
-    console.log(firstName, lastName);
-  };
-
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, validity, validationMessage } = e.target;
-
-    if (name === "firstName") {
-      setFirstNameError(validity.valid ? "" : validationMessage || "Please enter your first name.");
-    } else if (name === "lastName") {
-      setLastNameError(validity.valid ? "" : validationMessage || "Please enter your last name.");
-    }
+    console.log(
+      formData.get("firstName"),
+      formData.get("lastName"),
+      formData.get("email")
+    );
   };
 
   return (
@@ -52,7 +30,7 @@ function App() {
             <FormField
               label="First name: "
               htmlFor="first-name"
-              error={firstNameError}
+              error={errors["firstName"]}
             >
               <Input
                 id="first-name"
@@ -67,19 +45,30 @@ function App() {
             <FormField
               label="Last name: "
               htmlFor="last-name"
-              error={lastNameError}
+              error={errors["lastName"]}
             >
               <Input
                 id="last-name"
                 name="lastName"
                 type="text"
+                minLength={2}
+                required
+                onInput={handleInput}
+              />
+            </FormField>
+            <FormField label="Email: " htmlFor="email" error={errors["email"]}>
+              <Input
+                id="email"
+                name="email"
+                type="email"
                 required
                 onInput={handleInput}
               />
             </FormField>
             <div className="buttons-container">
-              <button type="reset">Clear</button>
-              <button>Next</button>
+              <button className="back-btn">Back</button>
+              <button onClick={() => window.location.reload()}>Clear</button>
+              <button className="next-btn">Next</button>
             </div>
           </form>
         </article>
@@ -88,29 +77,31 @@ function App() {
   );
 }
 
-type FormFieldProps = {
-  htmlFor?: string;
-  label: string;
-  error?: string;
-};
+function useFormValidation() {
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-function FormField({
-  htmlFor,
-  label,
-  error,
-  children,
-}: PropsWithChildren<FormFieldProps>) {
-  return (
-    <div className="form-field">
-      <label htmlFor={htmlFor}>{label}</label>
-      {children}
-      <p className="error-message">{error || " "}</p>
-    </div>
-  );
-}
+  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, validity, validationMessage } = e.target;
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: validity.valid
+        ? ""
+        : validationMessage || `Please enter your ${name}.`,
+    }));
+  };
 
-function Input({ className, ...props }: JSX.IntrinsicElements["input"]) {
-  return <input className={["text-field", className].join(" ")} {...props} />;
+  const validateFields = (formData: FormData) => {
+    const newErrors: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      if (!value) {
+        newErrors[key] = `Please enter your ${key}.`;
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  return { errors, handleInput, validateFields };
 }
 
 export default App;

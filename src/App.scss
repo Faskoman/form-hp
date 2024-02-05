@@ -2,25 +2,25 @@
 
 main,
 header {
-    width: min(50ch, 100% - 2rem);
+    width: min(60ch, 100% - 2rem);
     margin-inline: auto;
 }
 
 .form-field {
     display: flex;
     flex-direction: column;
+    margin-block-end: 2.2rem;
+    position: relative;
 
     .error-message {
-        // visibility: hidden;
         margin: 0;
-        color: darkred;
+        color: var(--error-color);
         font-weight: 600;
         font-size: 0.8rem;
         white-space: pre;
-    }
-
-    &[data-haserror=true] .error-message {
-        visibility: visible;
+        text-wrap: wrap;
+        position: absolute;
+        top: 100%;
     }
 }
 
@@ -36,7 +36,8 @@ header {
 }
 
 .card {
-    box-shadow: 0px 4px 30px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 30px 2px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
-    padding: 1rem;
+    padding: 1.5rem 2rem;
+    background-color: var(--primary-color);
 }
