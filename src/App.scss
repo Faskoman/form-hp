@@ -1,5 +1,4 @@
-@media (prefers-reduced-motion: no-preference) {
-}
+@media (prefers-reduced-motion: no-preference) {}
 
 main,
 header {
@@ -10,6 +9,19 @@ header {
 .form-field {
     display: flex;
     flex-direction: column;
+
+    .error-message {
+        // visibility: hidden;
+        margin: 0;
+        color: darkred;
+        font-weight: 600;
+        font-size: 0.8rem;
+        white-space: pre;
+    }
+
+    &[data-haserror=true] .error-message {
+        visibility: visible;
+    }
 }
 
 .text-field {
@@ -21,4 +33,10 @@ header {
     margin-block-start: 1rem;
     display: flex;
     justify-content: space-between;
+}
+
+.card {
+    box-shadow: 0px 4px 30px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
 }
