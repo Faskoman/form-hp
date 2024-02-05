@@ -1,3 +1,47 @@
-@media (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {}
+
+main,
+header {
+    width: min(60ch, 100% - 2rem);
+    margin-inline: auto;
 }
 
+.form-field {
+    display: flex;
+    flex-direction: column;
+    margin-block-end: 2.2rem;
+    position: relative;
+
+    .error-message {
+        margin: 0;
+        color: var(--error-color);
+        font-weight: 600;
+        font-size: 0.8rem;
+        white-space: pre;
+        text-wrap: wrap;
+        position: absolute;
+        top: 100%;
+    }
+}
+
+.text-field {
+    border: 1px solid currentColor;
+    border-radius: 6px;
+}
+
+.buttons-container {
+    margin-block-start: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card {
+    box-shadow: 0px 4px 30px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    background-color: var(--primary-color);
+}
+
+.visibility-hidden {
+    visibility: hidden;
+}
